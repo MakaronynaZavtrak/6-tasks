@@ -1,0 +1,136 @@
+        function NTab(T) {//функция построения таблицы RPR-символов
+            let counterStr = 0;
+            let counterArr = [];
+            let arr = new Array();
+            let indexRem = 0;
+            for (let i = 0; i < T.length; i++) {
+                for (let j = 0; j < T.length; j++) {
+                    if (T[i] == T[j]) {
+                        counterStr++;
+                    };
+                };
+                counterArr.push(counterStr);
+                counterStr = 0;
+            };           
+            for (let i = 0; i < T.length; i++) {
+                for (let j = 0; j < T.length; j++) {
+                    if (T[i] == T[j]) {
+                        indexRem = j;
+                    };
+                };
+                if (arr.includes(T[i])) {
+                    i += 0;
+                } else {
+                    arr.push(T[indexRem], indexRem);
+                };
+            };
+            return arr;
+        };
+
+        let badChar;
+        let tailArr = [];
+
+       function badCharRule(fragmentS, T) {//функция-аналог плохого символа           
+            let shift;
+            let contain;
+            let containTail;
+            LCounter(fragmentS, T);
+            if (contain = 0) {//если плохого символа нет в шаблоне
+                shift = T.length - l;
+            } else if (contain != 0 && containTail == 0) {//если плохой символ есть в шаблоне и не встречается в хвосте
+                let rprArr = NTab(T);
+                shift = T.length - rprArr[rprArr.indexOf(badChar) + 1] - l-1;
+            } else shift++//сдвиг на единичку 
+        };
+        
+        function preprocessing(T) {//функция-препроцессинг шаблона
+            let preArr = [];
+            for (let i = 0; i < T.length; i++) {
+                preArr.push(T[i]);
+            };
+            let shift;          
+            let arr = [];
+            for (let c = 0; c < T.length; c++) {//создаём расширенный шаблон
+                arr.push("*");
+            };
+            TAdded = arr.join('') + T;
+            for (let l = 0; l < T.length+1; l++) {    
+                for (let k = T.length - l - 1; k >= -T.length-1; k--) {                   
+                    if (TAdded.substring(k + T.length, k + T.length + l) == T.substring(T.length - l, T.length) && k > 0 && T[k - 1] != T[T.length - l - 1]) {
+                        rprArr.push(k);
+                        shift = T.length - k - l;
+                        shiftArr.push(shift);
+                        break;
+                } else if (TAdded.substring(k + T.length, k + T.length + l) == T.substring(T.length - l, T.length) && k == 0) {
+                    rprArr.push(k);
+                    shift = T.length - k - l;
+                    shiftArr.push(shift);
+                    break;
+                    } else if (TAdded.substring(k + T.length, k + T.length + l) != T.substring(T.length - l, T.length) && k < 0) {
+                        let iterStr = TAdded.substring(k + T.length, k + T.length + l);
+                        let starArr = [];
+                        for (let v = 0; v < iterStr.length; v++) {
+                            starArr.push(iterStr[v]);
+                        };
+                        if (starArr.includes("*")) {//Если строка содержит символ-звёздочку
+                        let starCounter = 0;
+                        for (let i = 0; i < starArr.length; i++) {
+                            if (starArr[i] == "*") {
+                                starCounter++;//считаем количество этих звёздочек
+                            } else break;
+                        };
+                        let correctedRightString = T.substring(T.length - l, T.length);
+                        let correctedRightArr = [];
+                        for (let i = 0; i < correctedRightString.length; i++) {
+                            correctedRightArr.push(correctedRightString[i]);
+                        };
+                        for (let i = 0; i < starCounter; i++) {
+                            starArr[i] = correctedRightArr[i];
+                        };
+                        let leftStr = starArr.join('');
+                        let rightStr = correctedRightArr.join('');
+                            if (leftStr == rightStr) {
+                                rprArr.push(k);
+                                shift = T.length - k - l;
+                                shiftArr.push(shift);
+                                break;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+
+        function LCounter(substrS, T) {//функция нахождения l совпавших в конце символов
+            let l = 0;
+            for (let i = T.length - 1, j = substrS.length - 1; i >= 0; i-- , j--) {
+                if (T[i] == substrS[j]) {
+                    l++;
+                } else {                   
+                    break;
+                };
+            };
+            return l;
+        };
+
+        let S = "abccabcbbccabcdabcdabc";
+        let T = "abcdabc";
+        console.log(NTab(T));//таблица наиболее правых вхождений
+        let rprArr = [];
+        let shiftArr = [];
+        let TAdded;
+        let indexArr = [];//массив, который будем заполнять индексами, начиная с которых шаблон вошёл в строку
+        let comeCounter = 0;//переменная-счетчик количества вхождений шаблона в строку
+        preprocessing(T);
+        console.log(rprArr);
+        console.log(shiftArr);
+        for (let i = 0; i < S.length;) {
+            let l = LCounter(S.substring(i, i + T.length), T);
+            if (l == T.length) {
+                indexArr.push(i);
+                comeCounter++;             
+            };
+            i += shiftArr[l];
+        };
+        console.log(comeCounter);//выводим число вхождений
+        console.log(indexArr);//выводим массиив индексов
