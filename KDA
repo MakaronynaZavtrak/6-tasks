@@ -1,0 +1,41 @@
+let Sigma = new Array();
+        let inpStr = "anus";
+        for (let i = 0; i < inpStr.length; i++) {
+            if (inpStr[i] in Sigma) {
+                Sigma[inpStr[i]]++;
+            } else {
+                Sigma.push(inpStr[i]);
+                Sigma[inpStr[i]] = 1;
+            };
+        };
+        console.log(Sigma);
+        let s = "ананас ананас";
+        let t = "ананас";
+        let alph = [];
+        for (let i = 0; i < t.length; i++) {
+            alph[t[i]] = 0;
+        };
+        let del = new Array(t.length + 1);
+        for (let j = 0; j <= t.length; j++) 
+            del[j] = new Array()
+        for (i in alph)
+            del[0][i] = 0;
+        for (j = 0; j < t.length; j++) {
+            prev = del[j][t.charAt(j)]
+            del[j][t.charAt(j)] = j + 1
+            for (i in alph)
+                del[j + 1][i] = del[prev][i]
+        };
+
+        let indexArr = [];
+        let state = 0;
+        for (let i = 0; i < s.length; i++) {
+            if (s[i] in alph) {
+                state = del[state][s[i]]
+        } else {
+                state = 0;
+            };
+            if (state == t.length)
+                indexArr.push(i - t.length + 1);
+        };
+        console.log(indexArr);
