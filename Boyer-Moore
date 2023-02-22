@@ -1,4 +1,5 @@
-        function NTab(T) {//функция построения таблицы RPR-символов
+      //КНМО-101 Семенов Олег
+      function NTab(T) {//функция построения таблицы RPR-символов
             let counterStr = 0;
             let counterArr = [];
             let arr = new Array();
