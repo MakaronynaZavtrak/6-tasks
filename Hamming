@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+    <meta charset="utf-8" />
+    <title>Hamming code</title>
+    <script>
+        String.prototype.replaceAt = function (index, element) {
+            return this.substr(0, index) + element + this.substr(index + 1);
+        };
+        function code() {
+            let mes = document.getElementById("inputMessage").value.split('');
+            if ((Number(mes[0]) + Number(mes[1]) + Number(mes[3])) % 2 == 0) {
+                mes.push(0)
+            }
+            else {
+                mes.push(1)
+            };
+            if ((Number(mes[2]) + Number(mes[1]) + Number(mes[3])) % 2 == 0) {
+                mes.push(0)
+            }
+            else {
+                mes.push(1)
+            };
+            if ((Number(mes[0]) + Number(mes[2]) + Number(mes[3])) % 2 == 0) {
+                mes.push(0)
+            }
+            else {
+                mes.push(1)
+            };
+            document.getElementById("codedMessage").value = mes;
+        };
+        function generateProblem() {
+            let mes = document.getElementById("codedMessage").value;
+            function generateRandomIndex(min = 0, max = 4) {
+                let difference = max - min;
+                let rand = Math.random();
+                rand = Math.floor(rand * difference);
+                rand = rand + min;
+                return rand;
+            };
+            mes = mes.replace(/[^0-1]/g, '');
+            let someIndex = generateRandomIndex();
+            let newStr;
+            if (mes[someIndex] == 0) {
+                 newStr = mes.replaceAt(someIndex, 1)
+            }
+            else {
+                newStr = mes.replaceAt(someIndex, 0)
+            };
+             
+            document.getElementById("messageAfterProblem").value = newStr;
+        };
+        function decode() {
+             let newStr1;
+             let mes1 = document.getElementById("messageAfterProblem").value;
+            let problemIndex;
+            
+             if (((Number(mes1[0]) + Number(mes1[1]) + Number(mes1[3]) + Number(mes1[4])) % 2 == 0) && Number(mes1[2]) == 1) {//1st
+                 newStr1 = mes1.replaceAt(2, 0);
+                 problemIndex = 3;
+             } else if (((Number(mes1[0]) + Number(mes1[1]) + Number(mes1[3]) + Number(mes1[4])) % 2 == 0) && Number(mes1[2]) == 0) {
+                 newStr1 = mes1.replaceAt(2, 1);
+                 problemIndex = 3;
+             } else if (((Number(mes1[2]) + Number(mes1[1]) + Number(mes1[3]) + Number(mes1[5])) % 2 == 0) && Number(mes1[0]) == 1) {//2nd
+                 newStr1 = mes1.replaceAt(0, 0);
+                 problemIndex = 1;
+             }
+             else if (((Number(mes1[2]) + Number(mes1[1]) + Number(mes1[3]) + Number(mes1[5])) % 2 == 0) && Number(mes1[0]) == 0) {
+                 newStr1 = mes1.replaceAt(0, 1);
+                 problemIndex = 1;
+             } else if (((Number(mes1[0]) + Number(mes1[2]) + Number(mes1[3]) + Number(mes1[6])) % 2 == 0) && Number(mes1[1]) == 1) {//3rd round
+                 newStr1 = mes1.replaceAt(1, 0);
+                 problemIndex = 2;
+             } else if (((Number(mes1[0]) + Number(mes1[2]) + Number(mes1[3]) + Number(mes1[6])) % 2 == 0) && Number(mes1[1]) == 0) {
+                 newStr1 = mes1.replaceAt(1, 1);
+                 problemIndex = 2;
+             } else if (Number(mes1[3]) == 1) {
+                 newStr1 = mes1.replaceAt(3, 0);
+                 problemIndex = 4;
+             } else if (Number(mes1[3]) == 0) {
+                 newStr1 = mes1.replaceAt(3, 1);
+                 problemIndex = 4;
+             }
+            document.getElementById("decodedMessage").value = newStr1;
+            document.getElementById("problemIndex").value = problemIndex;
+         };
+           
+    </script>
+</head>
+<body>
+    <h1>
+        Hamming Code
+    </h1>
+    <p>Please, input four bites here <input type='text' id="inputMessage" /></p>
+    <p><input type='button' value="Code it" onclick="code()" /></p>
+    <p>Coded message: <input type='text' id="codedMessage" /></p>
+    <p><input type='button' value="Generate problem at some bite from 1st to 4th" onclick="generateProblem()" /></p>
+    <p>Message after generating problem: <input type='text' id="messageAfterProblem" /></p>
+    <p><input type='button' value="Decode it" onclick="decode()" /></p>
+    <p>Decoded message: <input type='text' id="decodedMessage" /></p>
+    <p>The problem was detected at control bite number: <input type ="text" id="problemIndex"/></p> 
+    <script>
+                                                /*
+                                                 Семенов Олег Валерьевич
+                                                 Постановка задачи:
+                                                 1)Подать на вход строку, содержащую 4 контрольных бита
+                                                 2)К ним приделать ещё 3 дополнительных бита
+                                                 3)Организовываем помеху
+                                                 4)Пишем скрипт, определяющий, в каком из контрольных битов была организована помеха
+                                                 */
+    </script>
+</body>
+</html>
