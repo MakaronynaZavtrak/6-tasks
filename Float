@@ -1,0 +1,216 @@
+function signatureNumber(num) {//функция представления целого числа в двоичном виде
+            let checkNum = num;
+            let joinNum;
+            let preNum = num;
+            let signNum = [0, 0, 0, 0, 0, 0, 0, 0];
+            let finalNum;
+            let counter = 0;
+            while (checkNum / 2 != 0 && checkNum % 2 != 1) {
+                let newNum = checkNum / 2 + checkNum % 2;
+                counter++;
+                checkNum = newNum;
+            };
+
+            if (num == Math.pow(2, counter)) {
+                signNum[counter] = 1;
+                joinNum = signNum.reverse();
+                finalNum = joinNum.join('');
+                return finalNum;
+            }
+            else {
+                while (checkNum != 0) {
+                    while (checkNum / 2 != 0 && checkNum % 2 != 1) {
+                        let newNum = checkNum / 2 + checkNum % 2;
+                        counter++;
+                        checkNum = newNum;
+                    };
+                    signNum[counter] = 1;
+                    checkNum = preNum - Math.pow(2, counter);
+                    preNum = checkNum;
+                    counter = 0;
+                };
+                if (num % 2 == 1) {
+                    signNum[0] = 1
+                };
+                joinNum = signNum.reverse();
+                finalNum = joinNum.join('');
+                return finalNum;
+            };
+        };
+
+        function citizenSign(numBin) {
+            let citizen = 0;
+
+            let arr1 = [];
+            let arr2;
+            if (typeof numBin == "number") {
+                numBin = String(numBin);
+            };
+            for (let i = 0; i < 8; i++) {
+                arr1.push(numBin[i]);
+            };
+            arr2 = arr1.reverse();
+            for (let i = 0; i < arr2.length; i++) {
+                if (arr2[i] == 1) {
+                    citizen += Math.pow(2, i)
+                };
+            };
+            return citizen;
+        };
+
+        function fractSign(fract) {//функция представления дробной части в двоичном виде
+            let arr = [];
+            let finalNum;
+            for (let i = 1; i < 23; i++) {
+                if (fract > Math.pow(2, -i)) {
+                    fract -= Math.pow(2, -i);
+                    arr.push(1);
+                }
+                else if (fract == Math.pow(2, -i)) {
+                    arr.push(1);
+                    break;
+                }
+                else {
+                    arr.push(0);
+                };
+            };
+            finalNum = arr.join('');
+            return finalNum;
+        };
+
+        function input(string, letter) {
+            let newStr;
+            newStr = string.substr(0, 1) + letter + string.substr(1, string.legth);
+            return newStr;
+        };
+
+        function IEEE(num) {//основная функция, которую будем использовать
+            let signBefore;
+            let BinIntCut;
+            let BinInt;
+            let mantissa;
+            let deg;
+            let exp;
+            let signInt;
+            let wholeInt = "";
+            let wholeIntCut = "";
+            let fractInt;
+            let mantissaArr = [];
+            let finalNum;
+            if (num > 0) {
+                signBefore = "0";
+            } else {
+                signBefore = "1";
+                num *= -1;
+            };
+            if (num <= ((2 - Math.pow(2, -23)) * Math.pow(2, 127)) && num >= Math.pow(2, -126)) {//Если число является нормализованным
+                if (num % 1 == 0) {
+                    let BinIntBefore;
+                    let BinIntBeforeArr = [];
+                    let nullCounter = 0;
+                    BinIntBefore = signatureNumber(num);
+                    for (let i = 0; i < BinIntBefore.length; i++) {
+                        BinIntBeforeArr.push(BinIntBefore[i]);
+                    };
+                    for (let i = 0; i < BinIntBefore.length; i++) {
+                        if (BinIntBefore[i] == "0") {
+                            BinIntBeforeArr.shift();
+                            nullCounter++;
+                        } else {
+                            break;
+                        };
+                    };
+                    BinInt = BinIntBeforeArr.join('');
+                    BinIntCut = BinInt.substr(1, BinInt.length);
+                    deg = BinIntBefore.length - nullCounter - 1;
+                    exp = signatureNumber(deg + 127);//
+                    if (BinIntCut.length >= 23) {
+                        for (let i = 0; i < 23; i++) {
+                            mantissaArr.push(BinIntCut[i]);
+                        };
+                        mantissa = mantissaArr.join('');
+                    } else {
+                        for (let i = 0; i < BinIntCut.length; i++) {
+                            mantissaArr.push(BinIntCut[i]);
+                        };
+                        for (let i = 0; i < 23 - BinIntCut.length; i++) {
+                            mantissaArr.push(0);
+                        };
+                        mantissa = mantissaArr.join('');
+                    };
+                    finalNum = signBefore + " " + exp + " " + mantissa;
+                } else {
+                    let empty = [];
+                    let fract = num % 1;
+                    let integ = num - fract;
+                    let signIntArr = [];
+                    signInt = signatureNumber(integ);
+                    fractInt = fractSign(fract);
+                    for (let i = 0; i < signInt.length; i++) {
+                        signIntArr.push(signInt[i]);
+                    };
+                    for (let i = 0; i < signInt.length; i++) {
+                        if (signInt[i] == "1") {
+                            break;
+                        } else {
+                            signIntArr.shift();
+                        };
+                    };
+                    BinIntCut = signIntArr.join('');
+                    deg = BinIntCut.length - 1;
+                    wholeInt = BinIntCut + fractInt;
+                    wholeIntCut = wholeInt.substr(1, wholeInt.length);
+                    for (let i = 0; i < 23; i++) {
+                        empty.push(0);
+                    };
+                    if (deg == 128) {
+                        exp = signatureNumber(deg + 127);
+                        mantissa = empty.join('');
+                        finalNum = signBefore + " " + exp + " " + mantissa;
+                    } else {
+                        for (let i = 0; i < wholeIntCut.length; i++) {
+                            empty[i] = wholeIntCut[i];
+                        };
+                        mantissa = empty.join('');
+                        exp = signatureNumber(deg + 127);
+                        finalNum = signBefore + " " + exp + " " + mantissa;
+                    };
+                };
+            } else {
+                if (num > ((2 - Math.pow(2, -23)) * Math.pow(2, 127))) {
+                    exp = "11111111";
+                    for (let i = 0; i < 23; i++) {
+                        mantissaArr.push(0);
+                    };
+                    mantissa = mantissaArr.join('');
+                    finalNum = signBefore + " " + exp + " " + mantissa;
+                } else if (num < Math.pow(2, -126)) {
+                    exp = "00000000";
+                    fractInt = fractSign(num);
+                    if (fractInt.length >= 23) {
+                        for (let i = 0; i < 23; i++) {
+                            mantissArr.push(fractInt[i]);
+                        };
+                    } else {
+                        for (let i = 0; i < fractInt.length; i++) {
+                            mantissArr.push(fractInt[i]);
+                        };
+                        for (let i = 0; i < 23 - fractInt.length; i++) {
+                            mantissaArr.push(0);
+                        };
+                    };
+                    mantissa = mantissaArr.join('');
+                    finalNum = signBefore + " " + exp + " " + mantissa;
+                } else {
+                    exp = "11111111";
+                    for (let i = 0; i < 23; i++) {
+                        mantissaArr.push("x");
+                    };
+                    mantissa = mantissaArr.join('');
+                    finalNum = signBefore + " " + exp + " " + mantissa;
+                };
+            };
+            return finalNum;
+        };
+
+        console.log(IEEE(16.75));//переводим десятичное число в формат IEEE-754
