@@ -1,0 +1,50 @@
+//КНМО-101 Семенов Олег
+let conseq = 0;//соответствует количеству совпавших симоволов шаблона и строки
+        let come = 0;//соответствует количеству вхождений шаблона в строку
+        let S = "aaaaaaaaaaaaaaaaaaaaa....b";//на самом деле огромная строка размером не менее 10 тыс. символов
+        let T = "aaaaaab";
+        console.time("BF")
+        for (let i = 0; i < S.length; i++) {
+            for (let j = 0; j < T.length; j++) {
+                if (T[j] == S[i]) {
+                    i++;
+                    conseq++;
+                } else break;
+            };
+            i -= conseq;
+            if (conseq == T.length) {
+                come++;
+            };
+            conseq = 0;
+        };
+        console.timeEnd("BF");
+
+        function HashSumm(S, startIndex, limiter) {
+            let HashSumm = 0;
+            for (let i = startIndex; i < limiter; i++) {
+                HashSumm += S.charCodeAt(i);
+            };
+            return HashSumm;
+        };
+
+
+        let comeHash = 0;
+        let conseqHash = 0;
+        console.time("Hash");
+        for (let i = 0; i < S.length; i++) {
+            if (HashSumm(S, i, i + T.length) == HashSumm(T, 0, T.length)) {
+                for (let j = i, k = 0; j < i + T.length; j++ , k++) {
+                    if (S[j] == T[k]) {
+                        conseqHash++;
+                    } else break;
+                };
+                if (conseqHash == T.length) {
+                    comeHash++;
+                };
+                conseqHash = 0;
+            } else if (i + 2 * T.length - 1 < S.length) {
+                i += T.length - 1;
+            };
+        };
+        console.timeEnd("Hash");
+        console.log(come, comeHash);
