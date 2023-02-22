@@ -1,3 +1,4 @@
+//КНМО-101 Семенов Олег
 let Sigma = new Array();
         let inpStr = "anus";
         for (let i = 0; i < inpStr.length; i++) {
