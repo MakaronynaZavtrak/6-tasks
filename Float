@@ -1,3 +1,4 @@
+//КНМО-101 Семенов Олег
 function signatureNumber(num) {//функция представления целого числа в двоичном виде
             let checkNum = num;
             let joinNum;
