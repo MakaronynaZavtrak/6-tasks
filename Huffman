@@ -1,0 +1,104 @@
+let inputString = 'abrakadabra';//входящая строка
+        let alph = [];//массив частот уникальных символов, который мы заполним
+        let amountOfChars = 0;//переменная, благодаря которой определяется кол-во уникальных символов в строке
+
+        for (let i = 0; i < inputString.length; i++) {//заполняем массив частот уникальных символов
+            if (inputString[i] in alph) {
+                alph[inputString[i]]++;
+            }
+            else {
+                alph[inputString[i]] = 1;
+                amountOfChars++;
+            };
+        };
+
+        function arraySort(n1, n2)
+        {
+            if (n1[1] > n2[1]) {
+                return 1;
+            };
+            if (n1[1] == n2[1]) {
+                return 0;
+            };
+            if (n1[1] < n2[1]) {
+                return -1;
+            };
+        };
+
+        function buildTree(array) {
+            while (array.length > 1) {
+                let treePart = [array[0][0], array[1][0]];
+
+                let sumOfTwo = array[0][1] + array[1][1];
+
+                let comp = array.slice(2, array.length);
+
+                let end = [treePart, sumOfTwo];
+                array = comp;
+                array.push(end);
+                array.sort(arraySort);
+            }
+            return array[0][0]
+        };
+
+        function CodeNum(node, add) {
+            if (typeof (node) == typeof ("")) {
+                Signcode[node] = add;
+            } else {
+                CodeNum(node[0], add + '0');
+                CodeNum(node[1], add + '1');
+            };
+        };
+
+        let arrAlph = [];
+        let Signcode;
+        let decodedString = '';
+        //кодируем символы строки согласно количеству её уникальных символов
+        if (amountOfChars == 1) {  //кодирование и декодирование для одного символа в строке
+            Signcode = 0;
+            for (let i = 0; i < inputString.length; i++) {
+                decodedString += inputString.charAt(i);
+            }
+            console.log("Coded string: ", inputString[0],':', Signcode);
+            console.log("Decoded sring: ", decodedString);
+
+        } else { //кодирование для строки, содержащей более, чем один символ
+            for (i in alph) {
+                arrAlph.push([i, alph[i]]);
+            };
+            arrAlph.sort(arraySort); //отсортированный массив с частотами
+            
+            let Tree = buildTree(arrAlph);//строим дерево
+            Signcode = {};
+            let add = '';
+            CodeNum(Tree, add);
+
+            console.log(Signcode); //Итоговые коды символов
+
+            let arrCode = [];
+            for (i in Signcode) {
+                arrCode.push([i, Signcode[i]]);
+            }
+
+            let resultCode = ''
+            for (i = 0; i < inputString.length; i++) {//Кодирование входящей строки
+                for (j in arrCode) {
+                    if (inputString[i] == arrCode[j][0]) {
+                        resultCode += arrCode[j][1];
+                    };
+                };
+            };
+            console.log("Coded string: ", resultCode);//закодировнная строка
+
+            let decoder = '';
+            for (let i = 0; i < resultCode.length; i++) {//Декодирование полученной строки
+                decoder += resultCode[i];
+                for (j in arrCode) {
+                    if (decoder == arrCode[j][1]) {
+                        decodedString += arrCode[j][0];
+                        decoder = '';
+                    };
+                };
+            };
+            console.log("Decoded string: ", decodedString);//раскодированная
+        };
