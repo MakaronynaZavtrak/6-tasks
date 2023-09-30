@@ -1,0 +1,146 @@
+let str = "abrakadabra"
+const primalLen = str.length
+let arr = []
+
+for (let i = 0; i < str.length; i++){//Создаем массив уникальных символов
+    if (str[i] in arr){
+        arr[str[i]]++
+    } else {
+    arr[str[i]]=1
+    }
+}
+
+// let amountBit = 0//Определим, каким количеством битов необоходимо кодировать символы
+// let binPow = 0
+// do{
+//     binPow = Math.pow(2,amountBit)
+//     amountBit++
+// } while (arr.length > binPow)
+
+
+let count = 0
+let objArr = []
+for (i in arr){//Инициализируем объекты
+objArr[count] = {
+    letter: i,
+    freq: arr[i],
+    link: null,
+    code: ""
+}
+count++
+}
+
+let Tree = []
+let del = []
+while (objArr.length !=1){//Строим дерево
+let left  = findMin()
+let right = findMin()
+obj = new Object()
+obj = {
+    letter: left.letter + right.letter,
+    freq: left.freq + right.freq,
+    left: left, right,
+    code: ""
+    }
+    //left.link = obj
+left.code += "0"
+//right.link = obj
+right.code += "1"
+
+// if (!(left in Tree)){
+//     Tree.push(left)
+// }
+// if (!(right in Tree)){
+//     Tree.push(right)
+// }
+    Tree.push(obj)
+    objArr.push(obj)
+}   
+console.log(Tree)
+
+
+console.log(objArr)
+
+
+
+
+
+let Tab = []
+let iter = 0
+let codLeft = []
+let codRight = []
+let temp = objArr[0]
+//code(temp)
+
+console.log(Tab)
+
+// function code(temp){
+// if (temp.left != undefined) {
+// codLeft.push("0")
+// codRight.push("1")
+// code(temp.left)
+// code(temp.right)
+// } else if (){
+//     Tab[iter] = {
+//         char: temp.left.letter,
+//         code: codLeft.join('') 
+//     }
+//     iter++
+//     codLeft.pop()
+//     }
+
+// }
+
+// if (temp.right != undefined){
+//     cod.push("1")
+//     Tab[iter] = {
+//         char: temp.right.letter,
+//         code: cod.join('')
+//     }
+//     iter++
+//     code(temp.right)
+// } else {}
+
+function findMin(){//Функция для нахождения наименьшего по частоте элемента среди объектов
+    let min = primalLen
+    let idx = 0
+for (let i = 0; i < objArr.length; i++){
+if (objArr[i].freq < min){
+    min = objArr[i].freq
+    idx = i
+        }
+    }
+    obj = new Object()
+    obj = objArr[idx]
+    objArr.splice(idx, 1)
+    return obj
+}
+
+class Node{
+    constructor (letter, freq, left, right)
+    {
+        this.letter = letter
+        this.freq = freq
+        this.left = left
+        this.right = right
+    }
+
+    constructor (letter, freq)
+    {
+        this.letter = letter
+        this.freq = freq
+        this.left = null
+        this.right = null
+    }        
+}
+
+
+class BinaryTree {
+    constructor(){
+        this.root = null
+    }
+
+    add(value){
+
+    }
+}
