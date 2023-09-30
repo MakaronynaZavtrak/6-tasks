@@ -13,7 +13,7 @@ let inputString = 'abrakadabra';//входящая строка
             };
         };
 
-        function arraySort(n1, n2)
+        function arraySort(n1, n2)// Функция сортировки 
         {
             if (n1[1] > n2[1]) {
                 return 1;
@@ -27,22 +27,22 @@ let inputString = 'abrakadabra';//входящая строка
         };
 
         function buildTree(array) {
-            while (array.length > 1) {
+            while (array.length > 1) {//пока в массиве arrAplh не будет одного элемента
                 let treePart = [array[0][0], array[1][0]];
-
+                
                 let sumOfTwo = array[0][1] + array[1][1];
 
-                let comp = array.slice(2, array.length);
+                let comp = array.slice(2, array.length);//убираем два эелмента с наименьшей частотой
 
-                let end = [treePart, sumOfTwo];
+                let end = [treePart, sumOfTwo];//инициализируем элемент, который является слиянием двух предыдущих
                 array = comp;
                 array.push(end);
                 array.sort(arraySort);
             }
-            return array[0][0]
+            return array[0][0]//результатом будет один элемент, имеющий связь с двумя предыдущими и т.д.
         };
 
-        function CodeNum(node, add) {
+        function CodeNum(node, add) {//функция кодировки
             if (typeof (node) == typeof ("")) {
                 Signcode[node] = add;
             } else {
@@ -67,14 +67,14 @@ let inputString = 'abrakadabra';//входящая строка
             for (i in alph) {
                 arrAlph.push([i, alph[i]]);
             };
-            arrAlph.sort(arraySort); //отсортированный массив с частотами
+            arrAlph.sort(arraySort); //отсортированный массив с частотами в порядке возрастания элементов
             
             let Tree = buildTree(arrAlph);//строим дерево
             Signcode = {};
             let add = '';
             CodeNum(Tree, add);
 
-            console.log(Signcode); //Итоговые коды символов
+            console.log(Signcode); //Таблица кодировки
 
             let arrCode = [];
             for (i in Signcode) {
