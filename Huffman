@@ -1,105 +1,164 @@
-//КНМО-101 Семенов Олег
-let inputString = 'abrakadabra';//входящая строка
-        let alph = [];//массив частот уникальных символов, который мы заполним
-        let amountOfChars = 0;//переменная, благодаря которой определяется кол-во уникальных символов в строке
+let str = "abrakadabra"//входная строка
+const primalLen = str.length
+let arr = []
+//TODO: sorting
+console.log("Input string: ", str)
 
-        for (let i = 0; i < inputString.length; i++) {//заполняем массив частот уникальных символов
-            if (inputString[i] in alph) {
-                alph[inputString[i]]++;
-            }
-            else {
-                alph[inputString[i]] = 1;
-                amountOfChars++;
-            };
-        };
+for (let i = 0; i < str.length; i++){//Создаем массив уникальных символов с частотами
+    if (str[i] in arr){
+        arr[str[i]]++
+    } else {
+    arr[str[i]]=1
+    }
+}
 
-        function arraySort(n1, n2)// Функция сортировки 
-        {
-            if (n1[1] > n2[1]) {
-                return 1;
-            };
-            if (n1[1] == n2[1]) {
-                return 0;
-            };
-            if (n1[1] < n2[1]) {
-                return -1;
-            };
-        };
 
-        function buildTree(array) {
-            while (array.length > 1) {//пока в массиве arrAplh не будет одного элемента
-                let treePart = [array[0][0], array[1][0]];
-                
-                let sumOfTwo = array[0][1] + array[1][1];
 
-                let comp = array.slice(2, array.length);//убираем два эелмента с наименьшей частотой
 
-                let end = [treePart, sumOfTwo];//инициализируем элемент, который является слиянием двух предыдущих
-                array = comp;
-                array.push(end);
-                array.sort(arraySort);
-            }
-            return array[0][0]//результатом будет один элемент, имеющий связь с двумя предыдущими и т.д.
-        };
+let count = 0
+let objArr = []
+for (i in arr){//Инициализируем объекты
+objArr[count] = {
+    letter: i,
+    freq: arr[i],
+    father: null,
+    code: "",
+    left: false,
+    right: false,
+    leftSon: null,
+    rightSon: null,
+    son: true,
+    isUsed: false,
+    isMax: false
+}
+count++
+}
 
-        function CodeNum(node, add) {//функция кодировки
-            if (typeof (node) == typeof ("")) {
-                Signcode[node] = add;
-            } else {
-                CodeNum(node[0], add + '0');
-                CodeNum(node[1], add + '1');
-            };
-        };
 
-        let arrAlph = [];
-        let Signcode;
-        let decodedString = '';
-        //кодируем символы строки согласно количеству её уникальных символов
-        if (amountOfChars == 1) {  //кодирование и декодирование для одного символа в строке
-            Signcode = 0;
-            for (let i = 0; i < inputString.length; i++) {
-                decodedString += inputString.charAt(i);
-            }
-            console.log("Coded string: ", inputString[0],':', Signcode);
-            console.log("Decoded sring: ", decodedString);
+if (str.length == 1){
+    let obj = {
+        char: str[0],
+        code: "0"
+    }
+    console.log("Tab: ", obj)
+    console.log("Coded string: ", obj.code)
+    console.log("Decoded string: ", obj.char)
+} else if (objArr.length == 1){
+    let s = ""
+    let d = ""
+    for (let i = 0; i < objArr[0].freq; i++){
+        s += "0"
+        d += objArr[0].letter
+    }
+    console.log("Coded string: ", s)
+    console.log("Decodes string: ", d)
+} else {
 
-        } else { //кодирование для строки, содержащей более, чем один символ
-            for (i in alph) {
-                arrAlph.push([i, alph[i]]);
-            };
-            arrAlph.sort(arraySort); //отсортированный массив с частотами в порядке возрастания элементов
-            
-            let Tree = buildTree(arrAlph);//строим дерево
-            Signcode = {};
-            let add = '';
-            CodeNum(Tree, add);
+let leaves = []
+while (objArr.length !=1){//Строим дерево
+let left  = findMin()
+let right = findMin()
+obj = new Object()
+obj = {
+    letter: left.letter + right.letter,
+    freq: left.freq + right.freq,
+    father: null,
+    code: "",
+    left: false,
+    right: false,
+    leftSon: left,
+    rightSon: right
+    }
+left.father = obj
+left.left = true
+right.father = obj
+right.right = true
+if (left.son)
+leaves.push(left)
+if (right.son)
+leaves.push(right)
+    objArr.push(obj)
+}   
+let iter = 0
+let Tab = []
+let kod = []
+let ch =""
 
-            console.log(Signcode); //Таблица кодировки
+function getTab(object){
+    if (iter < leaves.length){
+if (object.father != null){
+    if (object.son){
+        ch = object.letter
+    }
+    if (object.left){
+        kod.push("0")
+    } else {
+        kod.push("1")
+    }
+    getTab(object.father)
+} else {
+    Tab[iter] = {
+        char: ch,
+        code: kod.reverse().join('')
+    }
+    kod.splice(0,kod.length)
+    iter++
+}
+    } else {
+        return
+    }
 
-            let arrCode = [];
-            for (i in Signcode) {
-                arrCode.push([i, Signcode[i]]);
-            }
+}
+for (let i  =0 ; i < leaves.length; i++){
+getTab(leaves[i])
+}
 
-            let resultCode = ''
-            for (i = 0; i < inputString.length; i++) {//Кодирование входящей строки
-                for (j in arrCode) {
-                    if (inputString[i] == arrCode[j][0]) {
-                        resultCode += arrCode[j][1];
-                    };
-                };
-            };
-            console.log("Coded string: ", resultCode);//закодировнная строка
+console.log("TAB: ",Tab)
+let codedStr = ""//Кодирование строки
+for (let i = 0; i < str.length; i++){
+    for (let j = 0; j < Tab.length; j++){
+        if (str[i]==Tab[j].char){
+            codedStr += Tab[j].code
+            break
+        } 
+    }
+}
+let dec = []//вспомогательный массив
+for (let i = 0; i < Tab.length; i++){
+    dec.push(Tab[i].char, Tab[i].code)
+}
 
-            let decoder = '';
-            for (let i = 0; i < resultCode.length; i++) {//Декодирование полученной строки
-                decoder += resultCode[i];
-                for (j in arrCode) {
-                    if (decoder == arrCode[j][1]) {
-                        decodedString += arrCode[j][0];
-                        decoder = '';
-                    };
-                };
-            };
-            console.log("Decoded string: ", decodedString);//раскодированная
-        };
+console.log("Coded string: ",codedStr)//выводим закодированную строку
+
+let repeat = 0
+let len = 1
+let decodedStr = ""
+for (let i = 0 ;  i < codedStr.length;){//декодирование
+    if (dec.indexOf(codedStr.slice(i,len))!= -1){
+        let idx = dec.indexOf(codedStr.slice(i,len))-1
+        decodedStr += dec[idx]
+        i += codedStr.slice(i,len).length
+        len += codedStr.slice(i,len).length-repeat
+        repeat = 0
+    } else 
+    len++
+    repeat++
+}
+
+console.log("Decoded string: ",decodedStr)//выводим декодированную строку
+
+function findMin(){//Функция для нахождения наименьшего по частоте элемента среди объектов
+    let min = primalLen
+    let idx = 0
+for (let i = 0; i < objArr.length; i++){
+if (objArr[i].freq < min){
+    min = objArr[i].freq
+    idx = i
+        }
+    }
+    let obj = objArr[idx]
+    objArr.splice(idx, 1)
+    return obj
+}
+
+}
