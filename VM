@@ -1,0 +1,62 @@
+
+let ip = 0
+let cmpFlag = false
+let memory = ["recurs", 10, 0, 0, 0, 0]
+
+let isOn = true
+
+while (isOn){
+    switch(memory[ip]){
+        case "add":{
+            memory[memory[ip+1]] = memory[memory[ip+1]] + memory[memory[ip+2]] 
+            ip += 3
+            break
+        }
+        case "writeln":{
+            console.log(memory[memory[ip+1]])
+            ip += 2
+            break
+        }
+        case "cmp":{
+            if (memory[memory[ip+1]]==memory[memory[ip+2]]){
+                cmpFlag = true
+            } else {
+                cmpFlag = false
+            }
+            ip += 3
+            break
+        }
+
+        case "jnz":{
+            if (!cmpFlag){
+                ip = memory[ip+1]
+            } else {
+                ip += 2
+            }
+            break
+        }
+
+        case "mult":{
+            memory[memory[ip+1]] = memory[memory[ip+1]] * memory[memory[ip+2]]
+            ip += 3
+            break
+        }
+
+        case "sub":{
+            memory[memory[ip+1]] = memory[memory[ip+1]] - memory[memory[ip+2]]
+            ip += 3
+            break
+        }
+
+        case "recurs":{
+
+        }
+
+        case "end":
+            isOn = false
+            break
+    }
+}
+
+
+    
